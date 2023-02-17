@@ -10,3 +10,19 @@ export const Reviews = ({ reviews }) => {
     </div>
   );
 };
+
+export const Reviews2 = ({ reviews }) => {
+  const restaurantReviews = reviews.map(({ text }) => text).join(" ,");
+
+  return React.createElement("div", {
+    children: [
+      React.createElement("h3", {
+        children: "Reviews"
+      }),
+      React.createElement("div", {
+        children: restaurantReviews
+      })
+    ]
+  });
+};
+
