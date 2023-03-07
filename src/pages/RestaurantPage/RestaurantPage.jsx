@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Cart } from "../../components/Cart/Cart";
 import { Restaurant } from "../../components/Restaurant/Restaurant";
 import { Tabs } from "../../components/Tabs/Tabs";
 import { transformRestaurantsToTabs } from "../../utils/transformRestaurantsToTabs";
@@ -19,6 +20,7 @@ export const RestaurantPage = ({ restaurants }) => {
         onTabClick={setActiveRestaurantIndex}
       />
       <Restaurant restaurant={activeRestaurant} />
+      <Cart />
     </div>
   );
 };
