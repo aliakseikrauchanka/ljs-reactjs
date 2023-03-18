@@ -1,22 +1,22 @@
 import React from "react";
-import { NewReviewForm } from "../NewReviewForm/NewReviewForm";
+import { useSelector } from "react-redux";
+import { selectRestaurantReviewsById } from "../../store/entities/restaurant/selectors";
 import { Review } from "../Review/Review";
+import styles from "./styles.module.css";
 
-export const Reviews = ({ reviews }) => {
+export const Reviews = ({ restaurantId }) => {
+  const reviews = useSelector((state) =>
+    selectRestaurantReviewsById(state, { restaurantId })
+  );
+
   return (
     <div>
       <h3>Reviews</h3>
-      <ul>
-        {reviews.map(
-          (review) =>
-            !!review && (
-              <li>
-                <Review review={review} />
-              </li>
-            )
-        )}
-      </ul>
-      <NewReviewForm />
+      <div className={styles.reviews}>
+        {reviews.map((id) => (
+          <Review className={styles.review} reviewId={id} />
+        ))}
+      </div>
     </div>
   );
 };
