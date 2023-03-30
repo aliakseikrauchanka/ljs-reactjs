@@ -1,19 +1,17 @@
 import React from "react";
 import { useSelector } from "react-redux";
-import { selectCartEntries } from "../../store/cart/selectors";
+import { selectCartIds } from "../../store/cart/selectors";
+import { Dish } from "../Dish/Dish";
 
 import styles from "./styles.module.css";
 
 export const Cart = () => {
-  const cart = useSelector(selectCartEntries);
+  const cart = useSelector(selectCartIds);
+
   return (
     <div className={styles.root}>
-      <h4>Cart</h4>
-      {cart.map(([name, count]) => (
-        <div className={styles.dish}>
-          <span>{name}</span>
-          <span>{count}</span>
-        </div>
+      {cart.map((dishId) => (
+        <Dish className={styles.dish} dishId={dishId} />
       ))}
     </div>
   );

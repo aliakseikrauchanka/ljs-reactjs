@@ -1,0 +1,10 @@
+.root {
+    display: flex;
+    flex-direction: column;
+    min-width: 600px;
+    padding: 0 20px;
+}
+
+.dish {
+    margin: 20px 0;
+}
