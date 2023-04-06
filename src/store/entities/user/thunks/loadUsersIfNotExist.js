@@ -1,18 +1,23 @@
-import { userSlice } from "..";
-import { selectUserIds } from "../selectors";
+import { createAsyncThunk } from "@reduxjs/toolkit";
+import { selectIsUserLoading, selectUserIds } from "../selectors";
 
-export const loadUserIfNotExist = () => (dispatch, getState) => {
-  const userIds = selectUserIds(getState());
-
-  if (userIds.length) {
-    return;
+export const loadUserIfNotExist = createAsyncThunk('user/fetchAll', async (_, { getState, rejectWithValue }) => {
+  try {
+    const response = await fetch("http://localhost:3001/api/users/");
+    return await response.json();
+  } catch (e) {
+    return rejectWithValue();
   }
 
-  dispatch(userSlice.actions.startLoading());
-  fetch("http://localhost:3001/api/users/")
-    .then((response) => response.json())
-    .then((users) =>
-      dispatch(userSlice.actions.finishLoading(users))
-    )
-    .catch(() => dispatch(userSlice.actions.failLoading()));
-};
+}, {
+  condition: (_, { getState }) => {
+    const state = getState();
+    const userIds = selectUserIds(state);
+    const isLoading = selectIsUserLoading(state);
+
+    if (userIds.length || isLoading) {
+      return false;
+    }
+    return true;
+  }
+});

@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useParams } from "react-router-dom";
 import { selectRestaurantReviewsById } from "../../store/entities/restaurant/selectors";
 import { selectIsReviewLoading } from "../../store/entities/review/selectors";
 import { loadReviewsIfNotExist } from "../../store/entities/review/thunks/loadReviewsIfNotExist";
@@ -7,11 +8,10 @@ import { loadUserIfNotExist } from "../../store/entities/user/thunks/loadUsersIf
 import { Review } from "../Review/Review";
 import styles from "./styles.module.css";
 
-export const Reviews = ({ restaurantId }) => {
+export const Reviews = () => {
+  const { restaurantId } = useParams();
   const dispatch = useDispatch();
-  const reviews = useSelector((state) =>
-    selectRestaurantReviewsById(state, { restaurantId })
-  );
+  const reviews = useSelector((state) => selectRestaurantReviewsById(state, { restaurantId }));
   const isLoading = useSelector(selectIsReviewLoading);
 
   useEffect(() => {
@@ -35,7 +35,7 @@ export const Reviews = ({ restaurantId }) => {
       <h3>Reviews</h3>
       <div className={styles.reviews}>
         {reviews.map((id) => (
-          <Review className={styles.review} reviewId={id} />
+          <Review key={id} className={styles.review} reviewId={id} />
         ))}
       </div>
     </div>

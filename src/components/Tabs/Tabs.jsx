@@ -7,7 +7,7 @@ export const Tabs = ({ tabs }) => {
   return (
     <div className={styles.root}>
       {tabs.map(({ title, id }) => (
-        <Tab title={title} to={id} className={styles.tab} />
+        <Tab key={id} title={title} to={id} className={styles.tab} />
       ))}
     </div>
   );

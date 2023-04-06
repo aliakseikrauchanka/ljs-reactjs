@@ -1,37 +1,31 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createEntityAdapter, createSlice } from "@reduxjs/toolkit";
 import { REQUEST_STATUSES } from "../../../constants/statuses";
+import { loadReviewsIfNotExist } from "./thunks/loadReviewsIfNotExist";
 
-const initialState = {
-  entities: {},
-  ids: [],
+// const initialState = {
+//   entities: {},
+//   ids: [],
+//   status: REQUEST_STATUSES.idle,
+// };
+
+const reviewsAdapter = createEntityAdapter({
   status: REQUEST_STATUSES.idle,
-};
+});
 
 export const reviewSlice = createSlice({
   name: "review",
-  initialState,
-  reducers: {
-    startLoading: (state) => {
+  initialState: reviewsAdapter.getInitialState(),
+  extraReducers: build => build
+    .addCase(loadReviewsIfNotExist.rejected, (state, payload) => {
+      state.status = payload === REQUEST_STATUSES.earlyLoaded ? REQUEST_STATUSES.success : REQUEST_STATUSES.failed;
+    })
+    .addCase(loadReviewsIfNotExist.pending, (state) => {
       state.status = REQUEST_STATUSES.pending;
-    },
-    failLoading: (state) => {
-      state.status = REQUEST_STATUSES.failed;
-    },
-    finishLoading: (state, { payload }) => {
-      state.entities = {
-        ...state.entities,
-        ...payload.reduce((acc, review) => {
-          acc[review.id] = review;
-
-          return acc;
-        }, {}),
-      };
-      state.ids = Array.from(
-        new Set([...state.ids, ...payload.map(({ id }) => id)])
-      );
+    })
+    .addCase(loadReviewsIfNotExist.fulfilled, (state, payload) => {
       state.status = REQUEST_STATUSES.success;
-    },
-  },
+      reviewsAdapter.setMany(state, payload);
+    })
 });
 
 export const reviewActions = reviewSlice.actions;

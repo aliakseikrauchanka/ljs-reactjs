@@ -1,15 +1,15 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createEntityAdapter, createSlice } from "@reduxjs/toolkit";
 import { REQUEST_STATUSES } from "../../../constants/statuses";
+import { loadUserIfNotExist } from "./thunks/loadUsersIfNotExist";
 
-const initialState = {
-  entities: {},
-  ids: [],
+
+export const userEntityAdapter = createEntityAdapter({
   status: REQUEST_STATUSES.idle,
-};
+})
 
 export const userSlice = createSlice({
   name: "user",
-  initialState,
+  initialState: userEntityAdapter.getInitialState(),
   reducers: {
     startLoading: (state) => {
       state.status = REQUEST_STATUSES.pending;
@@ -18,13 +18,19 @@ export const userSlice = createSlice({
       state.status = REQUEST_STATUSES.failed;
     },
     finishLoading: (state, { payload }) => {
-      state.entities = payload.reduce((acc, user) => {
-        acc[user.id] = user;
-
-        return acc;
-      }, {});
-      state.ids = payload.map(({ id }) => id);
+      userEntityAdapter.setMany(state, payload);
       state.status = REQUEST_STATUSES.success;
     },
   },
+  extraReducers: build => build
+    .addCase(loadUserIfNotExist.rejected, (state) => {
+      state.status = REQUEST_STATUSES.failed
+    })
+    .addCase(loadUserIfNotExist.pending, (state) => {
+      state.status = REQUEST_STATUSES.pending;
+    })
+    .addCase(loadUserIfNotExist.fulfilled, (state, payload) => {
+      state.status = REQUEST_STATUSES.success;
+      userEntityAdapter.addMany(state, payload);
+    })
 });

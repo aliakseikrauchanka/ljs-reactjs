@@ -8,17 +8,14 @@ import styles from "./styles.module.css";
 import { selectDishCount } from "../../store/cart/selectors";
 import { selectDishById } from "../../store/entities/dish/selectors";
 import classNames from "classnames";
+import { Link } from "react-router-dom";
 
 export const Dish = ({ dishId, className }) => {
   const dish = useSelector((state) => selectDishById(state, { dishId }));
-  const count = useSelector((state) =>
-    selectDishCount(state, { dishName: dish?.name })
-  );
+  const count = useSelector((state) => selectDishCount(state, { dishName: dish?.name }));
   const dispatch = useDispatch();
-  const increment = () =>
-    dispatch({ type: "incrementDish", payload: dish.name });
-  const decrement = () =>
-    dispatch({ type: "decrementDish", payload: dish.name });
+  const increment = () => dispatch({ type: "incrementDish", payload: dish.name });
+  const decrement = () => dispatch({ type: "decrementDish", payload: dish.name });
 
   if (!dish) {
     return null;
@@ -30,7 +27,7 @@ export const Dish = ({ dishId, className }) => {
     <div className={classNames(styles.root, className)}>
       <div className={styles.dish}>
         <div className={styles.title}>
-          <span>{name}</span>-<span>{price}</span>
+          <Link to={`/dishes/${dish.id}`}>{name}</Link>-<span>{price}</span>
         </div>
         <div className={styles.actions}>
           <Button

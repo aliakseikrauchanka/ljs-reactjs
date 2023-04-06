@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React from "react";
 import { useSelector } from "react-redux";
 import { useSearchParams } from "react-router-dom";
 import { Tabs } from "../../components/Tabs/Tabs";

@@ -1,9 +1,18 @@
+import { userEntityAdapter } from ".";
+import { REQUEST_STATUSES } from "../../../constants/statuses";
+
 export const selectUserModule = (state) => state.user;
 
-export const selectUserById = (state, { userId }) =>
-  selectUserModule(state).entities[userId];
+const userSelectors = userEntityAdapter.getSelectors(selectUserModule);
 
-export const selectUserIds = (state) => selectUserModule(state).ids;
+export const selectUserById = (state, { userId }) => userSelectors.selectById(state, userId);
 
-export const selectUsers = (state) =>
-  Object.values(selectUserModule(state).entities);
+export const selectUserIds = (state) => userSelectors.selectIds(state);
+
+export const selectUsers = (state) => userSelectors.selectEntities(state);
+
+export const selectUserLoadingState = (state) => selectUserModule(state).status;
+
+export const selectIsUserLoading = (state) => selectUserLoadingState(state) === REQUEST_STATUSES.pending;
+
+export const selectIsUserLoaded = (state) => selectUserLoadingState(state) === REQUEST_STATUSES.success;

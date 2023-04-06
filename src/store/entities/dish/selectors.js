@@ -9,6 +9,8 @@ export const selectDishById = (state, { dishId }) =>
 export const selectDishIds = dishSelectors.selectIds;
 export const selectDishes = dishSelectors.selectAll;
 
+export const selectDishesBySearch = (state, { search }) => selectDishes(state).filter(dish => search ? dish.name.toLowerCase().includes(search.toLowerCase()) : true);
+
 export const selectDishLoadingStatus = (state) =>
   selectDishModule(state).status;
 
